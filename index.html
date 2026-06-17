@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Stock Alerts</title>
+</head>
+<body>
+
+<h1>🚨 Stock Alerts Test</h1>
+
+<script>
+
+Notification.requestPermission();
+
+setTimeout(() => {
+
+  new Notification(
+    "🚨 TEST ALERT",
+    {
+      body: "GitHub Pages notification test"
+    }
+  );
+
+}, 5000);
+
+</script>
+
+</body>
+</html>
