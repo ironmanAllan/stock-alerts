@@ -109,11 +109,15 @@ async function checkAlerts() {
 
     if (newAlerts.length > 0) {
 
-      const alertText = newAlerts.map(a =>
-        a.ticker +
-        " | Live: " + a.livePrice +
-        " | Entry: " + a.entryPrice
-      ).join("\n");
+const firstAlert = newAlerts[0];
+
+const alertTitle =
+  "🚨 " + firstAlert.ticker + " Alert";
+
+const alertText =
+  firstAlert.groupName + "\n\n" +
+  "Live: " + firstAlert.livePrice + "\n" +
+  "Entry: " + firstAlert.entryPrice;
 
       document.getElementById("status").innerHTML =
         "<b>🚨 " + newAlerts.length +
@@ -123,18 +127,16 @@ async function checkAlerts() {
       document.getElementById("history").innerHTML =
         alertText.replace(/\n/g, "<br>");
 
-      if (Notification.permission === "granted") {
+if (Notification.permission === "granted") {
 
-        new Notification(
-          "🚨 " + newAlerts.length + " New Alert(s)",
-          {
-            body: alertText
-          }
-        );
-
-      }
-
+  new Notification(
+    alertTitle,
+    {
+      body: alertText
     }
+  );
+
+}
 
   } catch (e) {
 
