@@ -1,50 +1,156 @@
-if (newAlerts.length > 0) {
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Stock Alerts</title>
+</head>
+<body>
+
+<h2>🚨 Stock Alerts Running</h2>
+
+<h3>Connected ✅</h3>
+
+<div id="status">
+Waiting for alerts...
+</div>
+
+<h3>Recent Alerts</h3>
+
+<div id="history">
+No alerts yet
+</div>
+
+<div id="lastcheck">
+Last Check: Never
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxcAesVSRHxGtmFwDSw-ZrvJ6KgGPnFzDL4I8XsJxZmx80KQwpmSA_dcw7BNJs2qaF3/exec?api=1";
+
+let seenAlerts = new Set();
+let initialized = false;
+
+Notification.requestPermission();
+
+async function checkAlerts() {
+
+  try {
+
+    const response = await fetch(API_URL);
+    const alerts = await response.json();
+
+    document.getElementById("lastcheck").innerHTML =
+      "Last Check: " + new Date().toLocaleTimeString();
+
+    if (!Array.isArray(alerts)) return;
+
+    // Recovery alerts (last 30 minutes)
+    if (!initialized) {
+
+      const cutoff =
+        Date.now() - (30 * 60 * 1000);
+
+      const recoveryAlerts = alerts.filter(alert =>
+        new Date(alert.time).getTime() >= cutoff
+      );
+
+      if (recoveryAlerts.length > 0) {
+
+        const recoveryText = recoveryAlerts.map(a =>
+          a.ticker +
+          " | Live: " + a.livePrice +
+          " | Entry: " + a.entryPrice
+        ).join("\n");
+
+        document.getElementById("status").innerHTML =
+          "<b>Recovered Alerts</b><br><br>" +
+          recoveryText.replace(/\n/g, "<br>");
+
+        if (Notification.permission === "granted") {
+
+          new Notification(
+            "🚨 RECOVERED ALERTS",
+            {
+              body: recoveryText
+            }
+          );
+
+        }
+
+      }
+
+      alerts.forEach(alert => {
+        seenAlerts.add(alert.time + "|" + alert.ticker);
+      });
+
+      initialized = true;
+      return;
+
+    }
+
+    const newAlerts = [];
+
+    alerts.forEach(alert => {
+
+      const key =
+        alert.time + "|" + alert.ticker;
+
+      if (!seenAlerts.has(key)) {
+
+        seenAlerts.add(key);
+        newAlerts.push(alert);
+
+      }
+
+    });
+
+    if (newAlerts.length > 0) {
 
 const firstAlert = newAlerts[0];
+      console.log(firstAlert);
 
 const alertTitle =
-"🚨 " + firstAlert.ticker + " Alert";
+  "🚨 " + firstAlert.ticker + " Alert";
 
 const alertText =
-(firstAlert.groupName || "No Group") + "\n\n" +
-"Live: " + firstAlert.livePrice + "\n" +
-"Entry: " + firstAlert.entryPrice;
+  firstAlert.groupName + "\n\n" +
+  "Live: " + firstAlert.livePrice + "\n" +
+  "Entry: " + firstAlert.entryPrice;
 
-document.getElementById("status").innerHTML =
-"<b>🚨 " + newAlerts.length +
-" New Alert(s)</b><br><br>" +
-alertText.replace(/\n/g, "<br>");
+      document.getElementById("status").innerHTML =
+        "<b>🚨 " + newAlerts.length +
+        " New Alert(s)</b><br><br>" +
+        alertText.replace(/\n/g, "<br>");
 
-document.getElementById("history").innerHTML =
-alertText.replace(/\n/g, "<br>");
+      document.getElementById("history").innerHTML =
+        alertText.replace(/\n/g, "<br>");
 
 if (Notification.permission === "granted") {
 
-```
-new Notification(
-  alertTitle,
-  {
-    body: alertText
+  new Notification(
+    alertTitle,
+    {
+      body: alertText
+    }
+  );
+
+}
+
+  } catch (e) {
+
+    console.log(e);
+
   }
-);
-```
-
-}
-
-}
-
-} catch (e) {
-
-```
-console.log(e);
-```
-
-}
 
 }
 
 checkAlerts();
-setInterval(checkAlerts, 30000); </script>
+setInterval(checkAlerts, 30000);
+
+</script>
 
 </body>
 </html>
