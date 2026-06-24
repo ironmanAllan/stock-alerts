@@ -107,48 +107,53 @@ async function checkAlerts() {
 
     });
 
-    if (newAlerts.length > 0) {
+if (newAlerts.length > 0) {
 
 const firstAlert = newAlerts[0];
-console.log("FIRST ALERT:", firstAlert);
 
 const alertTitle =
-  "🚨 " + firstAlert.ticker + " Alert";
+"🚨 " + firstAlert.ticker + " Alert";
 
 const alertText =
-  firstAlert.groupName + "\n\n" +
-  "Live: " + firstAlert.livePrice + "\n" +
-  "Entry: " + firstAlert.entryPrice;
+(firstAlert.groupName || "No Group") + "\n\n" +
+"Live: " + firstAlert.livePrice + "\n" +
+"Entry: " + firstAlert.entryPrice;
 
-      document.getElementById("status").innerHTML =
-        "<b>🚨 " + newAlerts.length +
-        " New Alert(s)</b><br><br>" +
-        alertText.replace(/\n/g, "<br>");
+document.getElementById("status").innerHTML =
+"<b>🚨 " + newAlerts.length +
+" New Alert(s)</b><br><br>" +
+alertText.replace(/\n/g, "<br>");
 
-      document.getElementById("history").innerHTML =
-        alertText.replace(/\n/g, "<br>");
+document.getElementById("history").innerHTML =
+alertText.replace(/\n/g, "<br>");
 
 if (Notification.permission === "granted") {
 
-  new Notification(
-    alertTitle,
-    {
-      body: alertText
-    }
-  );
+new Notification(
+  alertTitle,
+  {
+    body: alertText
+  }
+);
 
 }
 
-  } catch (e) {
+}
 
-    console.log(e);
+} catch (e) {
 
-  }
+console.log(e);
+
+}
 
 }
 
 checkAlerts();
-setInterval(checkAlerts, 30000);
+setInterval(checkAlerts, 30000); </script>
+
+</body>
+</html>
+
 
 </script>
 
