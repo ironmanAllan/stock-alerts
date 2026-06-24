@@ -130,19 +130,18 @@ alertText.replace(/\n/g, "<br>");
 
 if (Notification.permission === "granted") {
 
-new Notification(
-  alertTitle,
-  {
-    body: alertText
-  }
-);
+  new Notification(
+    alertTitle,
+    {
+      body: alertText
+    }
+  );
 
 }
 
-}
+}   // closes if (newAlerts.length > 0)
 
-} catch (e) {
-
+  } catch (e) {
 console.log(e);
 
 }
