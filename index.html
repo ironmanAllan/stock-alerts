@@ -113,10 +113,9 @@ const firstAlert = newAlerts[0];
 console.log("FIRST ALERT:", firstAlert);
 
 const alertTitle =
-"🚨 " + firstAlert.ticker + " Alert";
+"🚨 " + firstAlert.groupName + " | " + firstAlert.ticker;
 
 const alertText =
-firstAlert.groupName + "\n\n" +
 "Live: " + firstAlert.livePrice + "\n" +
 "Entry: " + firstAlert.entryPrice;
 
