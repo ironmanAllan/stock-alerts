@@ -110,7 +110,7 @@ async function checkAlerts() {
   if (newAlerts.length > 0) {
 
 const firstAlert = newAlerts[0];
-console.log("FIRST ALERT:", firstAlert);
+console.log("FIRST ALERT:", JSON.stringify(firstAlert));
 
 const alertTitle =
 "🚨 " + firstAlert.groupName + " | " + firstAlert.ticker;
